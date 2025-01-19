@@ -15,6 +15,8 @@ for dirs, subs, files in os.walk(path_raw):
             df_in = pd.read_csv(f'{path_raw}/{file}', skiprows=2)
         if file.startswith('leaderboards') and file.endswith('.csv'):
             df_duo = pd.read_csv(f'{path_raw}/{file}')
+        if file.startswith('SPORT') and file.endswith('.csv'):
+            df_ex = pd.read_csv(f'{path_raw}/{file}')
 
 # %%
 #   linkedin transformation
@@ -38,3 +40,14 @@ df_duo = df_duo[['date', 'score']]
 
 #   save csv
 df_duo.to_csv(f'{path_done}/duolinguo_xp.csv', index=False)
+
+# %%
+#   exercise transformation
+df_ex['date'] = pd.to_datetime(df_ex['startTime']).dt.date
+df_ex = df_ex[['date', 'sportTime(s)', 'calories(kcal)']]
+df_ex = df_ex.rename(columns={'sportTime(s)': 'exercise_time', 'calories(kcal)': 'calories'})
+#   save csv
+df_ex.to_csv(f'{path_done}/exercise.csv', index=False)
+# %%
+#   To Do:
+#   [] Post to gsheet via API
